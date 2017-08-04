@@ -21,8 +21,18 @@ var enemyFigher;
 var explosion;
 var gameOver;
 var gameOverImg;
+var restartButton;
+var resetHandler;
+var tapRestart;
+var gameStats;
 var ultimateTracker = 0;
-
+var fonts = { font: '20px Arial', fill: '#fff' };
+var tapRestart;
+var spaceRestart;
+var enemyLasers;
+var enemyFireButton;
+var enemyLaserTime = 0;
+var livingEnemies = [];
 
 function preload() {
   spaceBattle.physics.startSystem(Phaser.Physics.ARCADE);
@@ -31,17 +41,20 @@ function preload() {
   spaceBattle.scale.pageAlignVertically = true;
   this.bounds = (0, 0, spaceBattle.world.width, spaceBattle.world.height);
 
-  spaceBattle.load.image('backDrop', 'images/space1.png');
-  spaceBattle.load.image('mainShip', 'images/mainShip.png');
-  spaceBattle.load.image('laser', 'images/greenFlame.png');
-  spaceBattle.load.image('meteor', 'images/meteor.png');
-  spaceBattle.load.image('enemyFighter', 'images/enemyFighter.png');
-  spaceBattle.load.image('explosion', 'images/explosion.png');
-  spaceBattle.load.image('gameOverImg', 'images/gameOver.jpeg');
+  spaceBattle.load.image('backDrop', 'attr/images/space1.png');
+  spaceBattle.load.image('mainShip', 'attr/images/mainShip.png');
+  spaceBattle.load.image('laser', 'attr/images/greenFlame.png');
+  spaceBattle.load.image('meteor', 'attr/images/meteor.png');
+  spaceBattle.load.image('enemyFighter', 'attr/images/enemyFighter.png');
+  spaceBattle.load.image('explosion', 'attr/images/explosion.png');
+  spaceBattle.load.image('gameOverImg', 'attr/images/gameOver.jpeg');
+  spaceBattle.load.image('enemyLasers', 'attr/images/enemyLasers.png');
 } // <--- end of Preload
 
 function create() {
   backDrop = spaceBattle.add.tileSprite(0, 0, 1000, 1200, 'backDrop');
+  spaceBattle.paused = true;
+  startGame();
 
   mainShip = spaceBattle.add.sprite(500, 1100, 'mainShip');
   mainShip.width = 80;
@@ -61,6 +74,16 @@ function create() {
   lasers.setAll('sacle', 0.1)
   lasers.setAll('outOfBoundsKill', true);
   lasers.setAll('checkWorldBounds', true);
+
+  enemyLasers = spaceBattle.add.group();
+  enemyLasers.enablebody = true;
+  enemyLasers.physicsBodyType = Phaser.Physics.ARCADE;
+  enemyLasers.createMultiple(40, 'enemyLasers');
+  enemyLasers.setAll('alpha', 0.9);
+  enemyLasers.setAll('anchor.x', 0.5);
+  enemyLasers.setAll('anchor.y', 0.5);
+  enemyLasers.setAll('outOfBoundsKill', true);
+  enemyLasers.setAll('checkWorldBounds', true);
 
   cursors = this.input.keyboard.createCursorKeys();
   fireButton = spaceBattle.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
@@ -99,20 +122,30 @@ function create() {
   explosion.animations.add('explosion');
   });
 
-  displayScore = spaceBattle.add.text(spaceBattle.world.width - 120, 10, 'Score: ' + score, { font: '20px Arial', fill: '#fff' });
-  displayHealth = spaceBattle.add.text(spaceBattle.world.width - 300, 10, 'Health: ' + health, { font: '20px Arial', fill: '#fff' });
+  displayScore = spaceBattle.add.text(spaceBattle.world.width - 120, 10, 'Score: ' + score, fonts);
+  displayHealth = spaceBattle.add.text(spaceBattle.world.width - 300, 10, 'Health: ' + health, fonts);
+
   gameOver = spaceBattle.add.image(spaceBattle.world.centerX, spaceBattle.world.centerY, 'gameOverImg');
   gameOver.anchor.setTo(0.5, 0.5);
   gameOver.scale.x = 3.95;
   gameOver.scale.y = 6;
   gameOver.visible = false;
+
+  restartButton = spaceBattle.add.text(spaceBattle.world.centerX -90, spaceBattle.world.centerY -400, 'CLICK TO RESART', fonts);
+  restartButton.visible = false;
+  restartButton.events.onInputDown.add(listener, this);
+
+  gameStats = spaceBattle.add.text(spaceBattle.world.centerX - 90, spaceBattle.world.centerY - 300, 'Final ' + displayScore.text, fonts);
+  gameStats.visible = false;
 }; //<--- end of Create
 
 function update() {
+  console.log(Phaser.Timer.SECOND * 4);
   spaceBattle.physics.arcade.overlap(mainShip, enemyFighter, shipCollide, null, this);
   spaceBattle.physics.arcade.overlap(enemyFighter, lasers, hitEnemy, null, this);
   spaceBattle.physics.arcade.overlap(meteor, lasers, hitMeteor, null, this);
-  spaceBattle.physics.arcade.overlap(meteor, mainShip, meteorHit, null, this)
+  spaceBattle.physics.arcade.overlap(meteor, mainShip, meteorHit, null, this);
+  // spaceBattle.physics.arcade.overlap(mainShip, enemyLasers, enemyLaserHitShip, null, this);
 
   if (cursors.left.isDown){
       mainShip.x -= 8;
@@ -123,19 +156,20 @@ function update() {
   if (fireButton.isDown) {
       fireLaser();
   }
-  if (displayHealth.text.length <= 9 ) {
-    console.log('working');
-      gameOver.visible = true;
-      // function setResetHandlers() {
-      //     //  The "click to restart" handler
-      //     tapRestart = spaceBattle.input.onTap.addOnce(_restart,this);
-      //     spaceRestart = fireButton.onDown.addOnce(_restart,this);
-      //     function _restart() {
-      //       tapRestart.detach();
-      //       spaceRestart.detach();
-      //       restart();
-      //     }
-      // }
+  if (displayHealth.text.length <= 9) {
+    spaceBattle.paused = true;
+    gameOver.visible = true;
+    restartButton.visible = true;
+    gameStats.visible = true;
+
+    setResetHandlers()
+    function setResetHandlers() {
+      tapRestart = spaceBattle.input.onTap.addOnce(_restart,this);
+      spaceRestart = fireButton.onDown.addOnce(_restart,this);
+      function _restart() {
+        location.reload()
+      }
+    }
   }
 
 } // <--- end of Update
@@ -153,7 +187,6 @@ function fireLaser () {
 
     var laserOffset = 20 * Math.sin(spaceBattle.math.degToRad(mainShip.angle));
     laser.reset(mainShip.x, mainShip.y);
-    laser.angle = mainShip.angle;
     spaceBattle.physics.arcade.velocityFromAngle(laser.angle - 90, BULLET_SPEED, laser.body.velocity);
     laser.body.velocity.x += mainShip.body.velocity.x;
 
@@ -179,6 +212,12 @@ function launchEnemy() {
     enemy.body.drag.x = 100;
   }
   spaceBattle.time.events.add(spaceBattle.rnd.between(MIN_ENEMY_SPACING, MAX_ENEMY_SPACING), launchEnemy);
+};
+
+function enemyLaserHitShip() {
+  enemyLasers.kill();
+  health -= 10;
+  displayHealth.text = 'Health: ' + health;
 };
 
 function shipCollide(mainShip, enemyFighter) {
@@ -242,9 +281,21 @@ function meteorShower() {
     meteors.body.drag.x = 100;
   }
   spaceBattle.time.events.add(spaceBattle.rnd.between(MIN_ENEMY_SPACING, MAX_ENEMY_SPACING), meteorShower);
-
+};
 function displayGameOver() {
   spaceBattle.world.removeAll();
   gameOver = spaceBattle.add.tileSprite(0, 0, 1000, 1200, 'gameOverImg');
 }
- };
+
+function listener() {
+  spaceBattle.state.start(spaceBattle.state.current);
+};
+
+function startGame() {
+  if (spaceBattle.paused = true) {
+    var onClick = spaceBattle.input.onTap.addOnce(start ,this);
+      function start() {
+        spaceBattle.paused = false;
+      }
+  }
+}
