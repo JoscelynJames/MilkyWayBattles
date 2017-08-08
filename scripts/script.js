@@ -60,7 +60,6 @@ function preload() {
   spaceBattle.load.image('explosion', 'attr/images/explosion.png');
   spaceBattle.load.image('gameOverImg', 'attr/images/gameOver1.jpg');
   spaceBattle.load.image('enemyLasers', 'attr/images/enemyLasers.png');
-  spaceBattle.load.image('laserBeam', 'attr/images/laserbeam.gif');
   spaceBattle.load.image('blackhole', 'attr/images/blackhole.png');
   spaceBattle.load.image('shield', 'attr/images/shield.png')
 
