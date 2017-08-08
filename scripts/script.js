@@ -1,4 +1,4 @@
-var spaceBattle = new Phaser.Game(1000, 1200, Phaser.AUTO, 'space-battle-div', {
+var spaceBattle = new Phaser.Game(1200, 1400, Phaser.AUTO, 'space-battle-div', {
   preload: preload, create: create, update: update
 });
 
@@ -12,36 +12,25 @@ var backDrop;
   var lasers;
   var laser;
   var laserTime = 0;
-  var nextFire = 0;
   var fireButton;
   var mainShipExplosion;
   var mainShipLaserAudio;
   var cursors;
+  var a, d, q;
   var meteor;
-  var meteorShower;
-  var enemyFigher1;
-  var enemyFigher2;
-  var explosion;
+  var enemyFighter1;
+  var enemyFighter2;
+  var explosions;
   var gameOver;
-  var gameOverImg;
   var restartButton;
-  var resetHandler;
   var tapRestart;
   var gameStats;
   var fonts = { font: '40px Bungee Hairline' , fill: '#fff' };
-  var tapRestart;
-  var spaceRestart;
   var enemyLasers;
-  var enemyFireButton;
-  var ultimateTracker = 0;
-  var displayUltimate;
-  var useUltimate;
-  var laserUltimate;
-  var laserBeam;
-  var blackhole;
   var meteorShowerAlert;
   var shield;
-  var activateshield;
+  var shieldCount = 0;
+  var chargeShield, chargeShield1, chargeShield2;
 
 
 function preload() {
@@ -61,7 +50,9 @@ function preload() {
   spaceBattle.load.image('gameOverImg', 'attr/images/gameOver1.jpg');
   spaceBattle.load.image('enemyLasers', 'attr/images/enemyLasers.png');
   spaceBattle.load.image('blackhole', 'attr/images/blackhole.png');
-  spaceBattle.load.image('shield', 'attr/images/shield.png')
+  spaceBattle.load.image('shield', 'attr/images/shield.png');
+  spaceBattle.load.image('shieldLogo', 'attr/images/glowingSheild.png');
+  spaceBattle.load.image('logo', 'attr/images/greyMilkyWay.png');
 
   spaceBattle.load.audio('enemyLaserAudio', 'attr/audio/enemy_laser.wav');
   spaceBattle.load.audio('enemyShipExplosion', 'attr/audio/enemy_ship_explosion.wav');
@@ -78,14 +69,14 @@ function preload() {
 
 function create() {
   bounds = new Phaser.Rectangle(100, 100, 500, 400);
-  backDrop = spaceBattle.add.tileSprite(0, 0, 1000, 1200, 'backDrop');
+  backDrop = spaceBattle.add.tileSprite(0, 0, 1200, 1400, 'backDrop');
   spaceBattle.paused = true;
   startGame();
   mainMusic = spaceBattle.add.audio('mainMusic');
   mainMusic.loop = true;
   mainMusic.play()
 
-  mainShip = spaceBattle.add.sprite(500, 1100, 'mainShip');
+  mainShip = spaceBattle.add.sprite(620, 1300, 'mainShip');
   mainShip.width = 150;
   mainShip.height = 150;
   mainShip.anchor.set(0.5, 0.5);
@@ -94,6 +85,26 @@ function create() {
 
   mainShip.boundsRect = bounds;
 
+  shield = spaceBattle.add.sprite(620, 1300, 'shield');
+  shield.height = 350;
+  shield.width = 350;
+  shield.anchor.set(-0.5, -0.5);
+  spaceBattle.physics.arcade.enable(shield);
+
+
+  chargeShield = spaceBattle.add.image(10, 10, 'shieldLogo')
+  chargeShield.height = 60;
+  chargeShield.width = 60;
+  chargeShield.visible = false;
+  chargeShield1 = spaceBattle.add.image(75, 10, 'shieldLogo')
+  chargeShield1.height = 60;
+  chargeShield1.width = 60;
+  chargeShield1.visible = false;
+  chargeShield2 = spaceBattle.add.image(140, 10, 'shieldLogo')
+  chargeShield2.height = 60;
+  chargeShield2.width = 60;
+  chargeShield2.visible = false;
+
   mainShipLaserAudio = spaceBattle.add.audio('mainShipLaserAudio')
   lasers = spaceBattle.add.group();
   lasers.enableBody = true;
@@ -101,10 +112,15 @@ function create() {
   lasers.createMultiple(30, 'laser');
   lasers.setAll('anchor.x', 0.5);
   lasers.setAll('anchor.y', 0.5);
+  lasers.setAll('collideWorldBounds', true)
   lasers.setAll('checkWorldBounds', true);
   lasers.setAll('outOfBoundsKill', true);
 
   cursors = this.input.keyboard.createCursorKeys();
+  a = spaceBattle.input.keyboard.addKey(Phaser.Keyboard.A)
+  d = spaceBattle.input.keyboard.addKey(Phaser.Keyboard.D)
+  q = spaceBattle.input.keyboard.addKey(Phaser.Keyboard.Q)
+  ultimateButton = spaceBattle.input.keyboard.addKey(Phaser.KeyCode.SHIFT);
   fireButton = spaceBattle.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
 
   meteorExplosion = spaceBattle.add.audio('meteorExplosion')
@@ -116,21 +132,17 @@ function create() {
   meteor.setAll('anchor.y', 0.5);
   meteor.setAll('checkWorldBounds', true);
   meteor.setAll('outOfBoundsKill', true);
-  meteorShowerAlert = spaceBattle.add.text(spaceBattle.world.centerX - 150, spaceBattle.world.centerY, 'Meteor Shower', fonts)
+  meteorShowerAlert = spaceBattle.add.text(
+    spaceBattle.world.centerX -550,
+    spaceBattle.world.centerY,
+    'Warning! Asteroid belt ahead!',
+    { font: '60px Bungee Hairline' , fill: '#fff' })
   meteorShowerAlert.visible = false;
-  spaceBattle.time.events.loop(Phaser.Timer.SECOND * 15, updateMeteorShower, this);
+  spaceBattle.time.events.add(Phaser.Timer.SECOND * 15,
+    updateMeteorShower,
+    this,
+    meteor);
 
-  enemyFighter1 = spaceBattle.add.group();
-  enemyFighter1.enableBody = true;
-  enemyFighter1.physicsBodyStyle = Phaser.Physics.ARCADE;
-  enemyFighter1.createMultiple(2, 'enemyFighter1');
-  enemyFighter1.setAll('anchor.x', 0.5);
-  enemyFighter1.setAll('anchor.y', 0.5);
-  enemyFighter1.setAll('scale.x', 0.5);
-  enemyFighter1.setAll('scale.y', 0.5);
-  enemyFighter1.setAll('checkWorldBounds', true);
-  enemyFighter1.setAll('outOfBoundsKill', true);
-  enemyFighter1.boundsRect = bounds;
 
   enemyFighter2 = spaceBattle.add.group();
   enemyFighter2.enableBody = true;
@@ -142,8 +154,28 @@ function create() {
   enemyFighter2.setAll('scale.y', 0.5);
   enemyFighter2.setAll('checkWorldBounds', true);
   enemyFighter2.setAll('outOfBoundsKill', true);
-  enemyFighter2.boundsRect = bounds;
-  launchEnemy2()
+  spaceBattle.time.events.add(
+    Phaser.Timer.SECOND * 5,
+    launchEnemy2,
+    this,
+    enemyFighter2)
+
+  enemyFighter1 = spaceBattle.add.group();
+  enemyFighter1.enableBody = true;
+  enemyFighter1.physicsBodyStyle = Phaser.Physics.ARCADE;
+  enemyFighter1.createMultiple(5, 'enemyFighter1');
+  enemyFighter1.setAll('anchor.x', 0.5);
+  enemyFighter1.setAll('anchor.y', 0.5);
+  enemyFighter1.setAll('scale.x', 0.5);
+  enemyFighter1.setAll('scale.y', 0.5);
+  enemyFighter1.setAll('checkWorldBounds', true);
+  enemyFighter1.setAll('outOfBoundsKill', true);
+  spaceBattle.time.events.add(
+    Phaser.Timer.SECOND * 30,
+    launchEnemy,
+    this,
+    enemyFighter1);
+
 
   enemyLaserAudio = spaceBattle.add.audio('enemyLaserAudio')
   enemyLasers = spaceBattle.add.group();
@@ -166,24 +198,34 @@ function create() {
   explosions.createMultiple(30, 'explosion');
   explosions.setAll('anchor.x', 0.5);
   explosions.setAll('anchor.y', 0.5);
-  explosions.forEach( function(explosion) {
-  explosion.animations.add('explosion');
+  explosions.forEach(function(explosion) {
+    explosion.animations.add('explosion');
   });
 
-  shield = spaceBattle.add.sprite(240, 800, 'shield');
-  shield.enableBody = true;
-  shield.physicsBodyType = Phaser.Physics.ARCADE;
-  shield.boundsRect = bounds;
+  displayScore = spaceBattle.add.text(
+    spaceBattle.world.width - 450,
+    10,
+    'Score: ' + score,
+    fonts);
+  displayHealth = spaceBattle.add.text(
+    spaceBattle.world.width - 900,
+    10,
+    'Health: ' + health,
+    fonts);
 
-  displayScore = spaceBattle.add.text(spaceBattle.world.width - 280, 10, 'Score: ' + score, fonts);
-  displayHealth = spaceBattle.add.text(spaceBattle.world.width - 600, 10, 'Health: ' + health, fonts);
-
-  gameOver = spaceBattle.add.image(spaceBattle.world.centerX, spaceBattle.world.centerY, 'gameOverImg');
+  gameOver = spaceBattle.add.image(
+    spaceBattle.world.centerX,
+    spaceBattle.world.centerY,
+    'gameOverImg');
   gameOver.anchor.setTo(0.5, 0.5);
   gameOver.scale.x = .9;
   gameOver.visible = false;
 
-  restartButton = spaceBattle.add.text(spaceBattle.world.centerX -255, spaceBattle.world.centerY -430, 'CLICK TO RESTART', { font: '60px Bungee Hairline' , fill: '#fff' });
+  restartButton = spaceBattle.add.text(
+    spaceBattle.world.centerX -255,
+    spaceBattle.world.centerY -430,
+    'CLICK TO RESTART',
+    { font: '60px Bungee Hairline', fill: '#fff' });
   restartButton.visible = false;
 
 
@@ -192,44 +234,48 @@ function create() {
 
 function update() {
   spaceBattle.physics.arcade.overlap(mainShip, enemyFighter1, shipCollide, null, this);
-  spaceBattle.physics.arcade.overlap(enemyFighter1, lasers, hitEnemy, null, this);
   spaceBattle.physics.arcade.overlap(mainShip, enemyFighter2, shipCollide, null, this);
-  spaceBattle.physics.arcade.overlap(enemyFighter2, lasers, hitEnemy, null, this);
-  spaceBattle.physics.arcade.overlap(meteor, lasers, hitMeteor, null, this);
-  spaceBattle.physics.arcade.overlap(meteor, mainShip, meteorHit, null, this);
-  spaceBattle.physics.arcade.overlap(mainShip, enemyLasers, enemyLaserHitShip, null, this);
-  spaceBattle.physics.arcade.overlap(blackhole, meteor, blackholeKill, null, this);
+  spaceBattle.physics.arcade.overlap(mainShip, meteor, meteorHit, null, this);
+
   spaceBattle.physics.arcade.overlap(shield, meteor, shieldCollision, null, this);
   spaceBattle.physics.arcade.overlap(shield, enemyFighter2, shieldCollision1, null, this);
   spaceBattle.physics.arcade.overlap(shield, enemyFighter1, shieldCollision2, null, this);
-  spaceBattle.physics.arcade.overlap(lasers, enemyLasers, laserCollision, null, this);
 
-  if (cursors.left.isDown){
-      mainShip.x -= 8;
+  spaceBattle.physics.arcade.overlap(enemyFighter1, lasers, hitEnemy, null, this);
+
+  spaceBattle.physics.arcade.overlap(enemyFighter2, lasers, hitEnemy, null, this);
+
+  spaceBattle.physics.arcade.overlap(meteor, lasers, hitMeteor, null, this);
+
+  if (a.isDown || cursors.left.isDown){
+      mainShip.x -= 12;
+  } else if (d.isDown || cursors.right.isDown) {
+      mainShip.x += 12;
   }
-  else if (cursors.right.isDown) {
-      mainShip.x += 8;
-  }
+
   if (fireButton.isDown) {
       fireLaser();
   }
-  if (score >= 300) {
-    spaceBattle.add.text(200, 300, 'New Enemies', fonts)
-    launchEnemy();
-  }
-  if (shield.visible = true) {
 
+  if (ultimateButton.isDown && shieldCount > 100) {
+    ultimate();
   }
+
+  if (shieldCount === 100) {
+    chargeShield.visible = true;
+  } else if (shieldCount === 300) {
+    chargeShield1.visible = true;
+  } else if (shieldCount === 900) {
+    chargeShield2.visible = true;
+  }
+
   if (health <= 0) {
-    gameOver.visible = true;
-    restartButton.visible = true;
-    mainShip.kill()
-    gameStats = spaceBattle.add.text(spaceBattle.world.centerX - 210, spaceBattle.world.centerY - 250, 'Final ' + displayScore.text, { font: '50px Bungee Hairline' , fill: '#fff' });
-
-    setResetHandlers()
+    spaceBattle.paused = true;
+    displayGameOver();
+    setResetHandlers();
     function setResetHandlers() {
-      tapRestart = spaceBattle.input.onTap.addOnce(_restart,this);
-      function _restart() {
+      tapRestart = spaceBattle.input.onTap.addOnce(restart,this);
+      function restart() {
         location.reload()
       }
     }
