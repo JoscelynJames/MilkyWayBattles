@@ -31,6 +31,8 @@ var backDrop;
   var shield;
   var shieldCount = 0;
   var chargeShield, chargeShield1, chargeShield2;
+  var clickAudio;
+  var startScreen;
 
 
 function preload() {
@@ -52,7 +54,7 @@ function preload() {
   spaceBattle.load.image('blackhole', 'attr/images/blackhole.png');
   spaceBattle.load.image('shield', 'attr/images/shield.png');
   spaceBattle.load.image('shieldLogo', 'attr/images/glowingSheild.png');
-  spaceBattle.load.image('logo', 'attr/images/greyMilkyWay.png');
+  spaceBattle.load.image('logo', 'attr/images/milkyWay.png');
 
   spaceBattle.load.audio('enemyLaserAudio', 'attr/audio/enemy_laser.wav');
   spaceBattle.load.audio('enemyShipExplosion', 'attr/audio/enemy_ship_explosion.wav');
@@ -68,13 +70,18 @@ function preload() {
 
 
 function create() {
+
   bounds = new Phaser.Rectangle(100, 100, 500, 400);
   backDrop = spaceBattle.add.tileSprite(0, 0, 1200, 1400, 'backDrop');
   spaceBattle.paused = true;
+
+  startScreen = spaceBattle.add.image(340 , 300 , 'logo');
+
   startGame();
   mainMusic = spaceBattle.add.audio('mainMusic');
+  clickAudio = spaceBattle.add.audio('onClickAudio');
   mainMusic.loop = true;
-  mainMusic.play()
+  mainMusic.play();
 
   mainShip = spaceBattle.add.sprite(620, 1300, 'mainShip');
   mainShip.width = 150;
@@ -112,19 +119,19 @@ function create() {
   lasers.createMultiple(30, 'laser');
   lasers.setAll('anchor.x', 0.5);
   lasers.setAll('anchor.y', 0.5);
-  lasers.setAll('collideWorldBounds', true)
+  lasers.setAll('collideWorldBounds', true);
   lasers.setAll('checkWorldBounds', true);
   lasers.setAll('outOfBoundsKill', true);
 
   cursors = this.input.keyboard.createCursorKeys();
-  a = spaceBattle.input.keyboard.addKey(Phaser.Keyboard.A)
-  d = spaceBattle.input.keyboard.addKey(Phaser.Keyboard.D)
-  q = spaceBattle.input.keyboard.addKey(Phaser.Keyboard.Q)
+  a = spaceBattle.input.keyboard.addKey(Phaser.Keyboard.A);
+  d = spaceBattle.input.keyboard.addKey(Phaser.Keyboard.D);
+  q = spaceBattle.input.keyboard.addKey(Phaser.Keyboard.Q);
   ultimateButton = spaceBattle.input.keyboard.addKey(Phaser.KeyCode.SHIFT);
   fireButton = spaceBattle.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
 
-  meteorExplosion = spaceBattle.add.audio('meteorExplosion')
-  meteor = spaceBattle.add.group()
+  meteorExplosion = spaceBattle.add.audio('meteorExplosion');
+  meteor = spaceBattle.add.group();
   meteor.enableBody = true;
   meteor.physicsBodyType = Phaser.Physics.ARCADE;
   meteor.createMultiple(10, 'meteor');
@@ -136,7 +143,7 @@ function create() {
     spaceBattle.world.centerX -550,
     spaceBattle.world.centerY,
     'Warning! Asteroid belt ahead!',
-    { font: '60px Bungee Hairline' , fill: '#fff' })
+    { font: '60px Bungee Hairline' , fill: '#fff' });
   meteorShowerAlert.visible = false;
   spaceBattle.time.events.add(Phaser.Timer.SECOND * 15,
     updateMeteorShower,
@@ -158,7 +165,7 @@ function create() {
     Phaser.Timer.SECOND * 5,
     launchEnemy2,
     this,
-    enemyFighter2)
+    enemyFighter2);
 
   enemyFighter1 = spaceBattle.add.group();
   enemyFighter1.enableBody = true;
@@ -191,7 +198,7 @@ function create() {
 
 
   enemyShipExplosion = spaceBattle.add.audio('enemyShipExplosion');
-  mainShipExplosion = spaceBattle.add.audio('mainShipExplosion')
+  mainShipExplosion = spaceBattle.add.audio('mainShipExplosion');
   explosions = spaceBattle.add.group();
   explosions.enableBody = true;
   explosions.physicsBodyType = Phaser.Physics.ARCADE;
@@ -280,4 +287,4 @@ function update() {
       }
     }
   }
-} // <-------------------- end of Update----------------------------------
+}; // <-------------------- end of Update----------------------------------

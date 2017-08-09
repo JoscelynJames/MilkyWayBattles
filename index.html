@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>Milky Way Battles</title>
+    <link href="https://fonts.googleapis.com/css?family=Bungee+Hairline" rel="stylesheet">
     <script
       src="https://code.jquery.com/jquery-3.2.1.min.js"
       integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
@@ -11,24 +12,22 @@
     <script src="attr/libs/phaser.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.1/js/foundation.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.1/css/foundation.min.css"/>
-    <link href="https://fonts.googleapis.com/css?family=Bungee+Hairline" rel="stylesheet">
     <script src="scripts/script.js"></script>
     <script src="scripts/functions.js"></script>
     <link rel="stylesheet" href="style.css">
   </head>
   <body>
-    <header class="subnav-hero-section">
-      <img id="head-img" src="attr/images/GreyMilkyWay.png">
+    <header class="subnav-hero-section" data-magellan>
+      <img id="head-img" src="attr/images/milkyWay.png">
       <ul class="subnav-hero-subnav">
         <li><a href="#">Score Board</a></li>
-        <li><a href="#" class="is-active">Play!</a></li>
+        <li><a href="#data-magellan" class="is-active" data-magellan>Play!</a></li>
         <li><a target="_blank" href="http://zurb.com/responsive">Just do it!</a></li>
       </ul>
     </header>
 
     <div
-      class="large-12 row"
-      id="space-battle-div">
+      id="data-magellan">
     </div>
   </body>
 </html>

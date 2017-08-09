@@ -170,13 +170,12 @@ function shieldCollision(shield, meteor) {
 }
 
 function shieldCollision1(shield, enemyFighter1) {
-  // var explosion = explosions.getFirstExists(false);
-  // explosion.reset(enemyFighter1.body.x + enemyFighter1.body.halfWidth, enemyFighter1.body.y + enemyFighter1.body.halfHeight);
-  // explosion.body.velocity.y = enemyFighter1.body.velocity.y;
-  // explosion.alpha = 0.7;
-  // explosion.play('explosion', 30, false, true);
-  // mainShipExplosion.play();
-  fadePicture()
+  var explosion = explosions.getFirstExists(false);
+  explosion.reset(enemyFighter1.body.x + enemyFighter1.body.halfWidth, enemyFighter1.body.y + enemyFighter1.body.halfHeight);
+  explosion.body.velocity.y = enemyFighter1.body.velocity.y;
+  explosion.alpha = 0.7;
+  explosion.play('explosion', 30, false, true);
+  mainShipExplosion.play();
   enemyFighter1.kill()
 }
 
@@ -201,6 +200,8 @@ function startGame() {
   if (spaceBattle.paused = true) {
     var onClick = spaceBattle.input.onTap.addOnce(start ,this);
       function start() {
+        startScreen.visible = false;
+        clickAudio.play()
         spaceBattle.paused = false;
       }
   }
