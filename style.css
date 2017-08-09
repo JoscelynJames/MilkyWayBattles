@@ -63,8 +63,3 @@ body {
 .subnav-hero-subnav li a:hover {
   background: rgba(254, 254, 254, 0.15);
 }
-
-#space-battle-div {
-  height: 700px;
-  width: 100%;
-}

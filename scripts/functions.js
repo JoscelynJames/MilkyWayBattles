@@ -32,6 +32,7 @@ function ultimate() {
   shield.width = 350;
   shield.anchor.set(0.5, 0.5);
   spaceBattle.physics.arcade.enable(shield);
+  shieldCount -= 100
 
   spaceBattle.time.events.add(Phaser.Timer.SECOND * 8, removeShield, this);
 }

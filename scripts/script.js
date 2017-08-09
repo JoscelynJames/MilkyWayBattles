@@ -54,7 +54,7 @@ function preload() {
   spaceBattle.load.image('blackhole', 'attr/images/blackhole.png');
   spaceBattle.load.image('shield', 'attr/images/shield.png');
   spaceBattle.load.image('shieldLogo', 'attr/images/glowingSheild.png');
-  spaceBattle.load.image('logo', 'attr/images/milkyWay.png');
+  spaceBattle.load.image('logo', 'attr/images/MilkyWay.png');
 
   spaceBattle.load.audio('enemyLaserAudio', 'attr/audio/enemy_laser.wav');
   spaceBattle.load.audio('enemyShipExplosion', 'attr/audio/enemy_ship_explosion.wav');
@@ -102,15 +102,15 @@ function create() {
   chargeShield = spaceBattle.add.image(10, 10, 'shieldLogo')
   chargeShield.height = 60;
   chargeShield.width = 60;
-  chargeShield.visible = false;
+  // chargeShield.visible = false;
   chargeShield1 = spaceBattle.add.image(75, 10, 'shieldLogo')
   chargeShield1.height = 60;
   chargeShield1.width = 60;
-  chargeShield1.visible = false;
+  // chargeShield1.visible = false;
   chargeShield2 = spaceBattle.add.image(140, 10, 'shieldLogo')
   chargeShield2.height = 60;
   chargeShield2.width = 60;
-  chargeShield2.visible = false;
+  // chargeShield2.visible = false;
 
   mainShipLaserAudio = spaceBattle.add.audio('mainShipLaserAudio')
   lasers = spaceBattle.add.group();
@@ -236,10 +236,12 @@ function create() {
   restartButton.visible = false;
 
 
+
 }; //<---------------------------end of Create-------------------------------
 
 
 function update() {
+  console.log(shieldCount);
   spaceBattle.physics.arcade.overlap(mainShip, enemyFighter1, shipCollide, null, this);
   spaceBattle.physics.arcade.overlap(mainShip, enemyFighter2, shipCollide, null, this);
   spaceBattle.physics.arcade.overlap(mainShip, meteor, meteorHit, null, this);
@@ -264,16 +266,28 @@ function update() {
       fireLaser();
   }
 
-  if (ultimateButton.isDown && shieldCount > 100) {
+  if (ultimateButton.isDown && shieldCount > 200) {
     ultimate();
+    spaceBattle.add.text(10, 80, 'You gained a Sield! Press SHIFT now!', fonts)
+
   }
 
-  if (shieldCount === 100) {
+  if (shieldCount === 200) {
     chargeShield.visible = true;
-  } else if (shieldCount === 300) {
+  } else if(shieldCount < 200) {
+    chargeShield.visible = false
+  }
+
+  if (shieldCount === 300) {
     chargeShield1.visible = true;
-  } else if (shieldCount === 900) {
+  } else if (shieldCount < 300) {
+    chargeShield1.visible = false
+  }
+
+  if (shieldCount === 400) {
     chargeShield2.visible = true;
+  } else if (shieldCount < 400) {
+    chargeShield2.visible = false
   }
 
   if (health <= 0) {
