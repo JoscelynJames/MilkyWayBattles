@@ -268,11 +268,10 @@ function update() {
 
   if (ultimateButton.isDown && shieldCount > 200) {
     ultimate();
-    spaceBattle.add.text(10, 80, 'You gained a Sield! Press SHIFT now!', fonts)
-
   }
 
   if (shieldCount === 200) {
+    spaceBattle.add.text(10, 80, 'You gained a Sield! Press SHIFT now!', fonts);
     chargeShield.visible = true;
   } else if(shieldCount < 200) {
     chargeShield.visible = false
