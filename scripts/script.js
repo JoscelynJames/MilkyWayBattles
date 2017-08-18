@@ -292,12 +292,15 @@ function update() {
   if (health <= 0) {
     spaceBattle.paused = true;
     displayGameOver();
-    setResetHandlers();
-    function setResetHandlers() {
-      tapRestart = spaceBattle.input.onTap.addOnce(restart,this);
-      function restart() {
-        location.reload()
-      }
-    }
+
+    openModal();
+
+    // setResetHandlers();
+    // function setResetHandlers() {
+    //   tapRestart = spaceBattle.input.onTap.addOnce(restart,this);
+    //   function restart() {
+    //     location.reload()
+    //   }
+    // }
   }
 }; // <-------------------- end of Update----------------------------------

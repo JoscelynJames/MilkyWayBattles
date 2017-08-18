@@ -1,4 +1,33 @@
 ///Start of functions area
+
+// activate foundation
+$(document).ready(function() {
+  $(this).foundation();
+
+  $('#user-score-form').submit(function(e) {
+    e.preventDefault();
+
+    $.ajax({
+      url: 'https://milky-way-scoreboard-api.herokuapp.com/api/v1/new-score',
+      method: 'POST',
+      dataType: 'application/json',
+      data: { userName: $('#name').val(), userScore: score},
+      success: $('#userDataModal').foundation('close')
+    });
+  });
+});
+
+function startGame() {
+  if (spaceBattle.paused = true) {
+    var onClick = spaceBattle.input.onTap.addOnce(start ,this);
+    function start() {
+      startScreen.visible = false;
+      clickAudio.play()
+      spaceBattle.paused = false;
+    }
+  }
+};
+
 var functions = function(spaceBattle) {};
 
 function fireLaser () {
@@ -65,6 +94,9 @@ function launchEnemy2() {
   spaceBattle.time.events.add(spaceBattle.rnd.between(MIN_ENEMY_SPACING, MAX_ENEMY_SPACING), launchEnemy2);
 };
 
+function warning() {
+  meteorShowerAlert.visible = false;
+};
 
 function meteorShower() {
   var MIN_ENEMY_SPACING = 300;
@@ -81,6 +113,13 @@ function meteorShower() {
       meteors.body.drag.x = 100;
     }
     spaceBattle.time.events.add(spaceBattle.rnd.between(MIN_ENEMY_SPACING, MAX_ENEMY_SPACING), meteorShower);
+};
+
+function updateMeteorShower() {
+  console.log('updateMeteorShower');
+  meteorShowerAlert.visible = true;
+  spaceBattle.time.events.add(Phaser.Timer.SECOND * 4, warning, this);
+  meteorShower();
 };
 
 function shipCollide(mainShip, enemyFighter1) {
@@ -197,27 +236,9 @@ function displayGameOver() {
   mainShip.kill()
 };
 
-function startGame() {
-  if (spaceBattle.paused = true) {
-    var onClick = spaceBattle.input.onTap.addOnce(start ,this);
-      function start() {
-        startScreen.visible = false;
-        clickAudio.play()
-        spaceBattle.paused = false;
-      }
-  }
+function openModal() {
+  $('#userDataModal').foundation('open');
 };
-
-function warning() {
-  meteorShowerAlert.visible = false;
-}
-
-function updateMeteorShower() {
-  console.log('updateMeteorShower');
-  meteorShowerAlert.visible = true;
-  spaceBattle.time.events.add(Phaser.Timer.SECOND * 4, warning, this);
-  meteorShower();
-}
 
 function fadePicture() {
   console.log('fade');
