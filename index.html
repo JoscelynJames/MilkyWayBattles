@@ -20,23 +20,19 @@
     <header class="subnav-hero-section" data-magellan>
       <img id="head-img" src="attr/images/MilkyWay.png">
       <ul class="subnav-hero-subnav">
-        <li><a href="#">Score Board</a></li>
+        <li><a href="https://milky-way-battles-scoreboard.firebaseapp.com">Scoreboard</a></li>
         <li><a href="#first" class="is-active" data-magellan>Play!</a></li>
         <li><a target="_blank" href="#">About</a></li>
       </ul>
     </header>
 
     <div class="reveal small" id="userDataModal" data-reveal>
-
       <form id="user-score-form">
-        <label for="name">Enter Name For Scoreboard!</label>
-        <input type="text" id="name" name="userName">
-        <button type=“submit” value=“Submit”>Submit</button>
+        <label for="name">Enter Name For Scoreboard!
+          <input type="text" id="name" name="userName">
+        </label>
+        <button id="highScoreSubmitButton" type=“submit” value=“Submit”>Submit</button>
       </form>
-
-      <button class="close-button" data-close aria-label="Close modal" type="button">
-        <span aria-hidden="true">&times;</span>
-      </button>
     </div>
 
     <div id="first"></div>

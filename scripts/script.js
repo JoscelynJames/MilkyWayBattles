@@ -295,12 +295,12 @@ function update() {
 
     openModal();
 
-    // setResetHandlers();
-    // function setResetHandlers() {
-    //   tapRestart = spaceBattle.input.onTap.addOnce(restart,this);
-    //   function restart() {
-    //     location.reload()
-    //   }
-    // }
+    setResetHandlers();
+    function setResetHandlers() {
+      tapRestart = spaceBattle.input.onTap.addOnce(restart,this);
+      function restart() {
+        location.reload()
+      }
+    }
   }
 }; // <-------------------- end of Update----------------------------------

@@ -64,3 +64,9 @@ body {
 .subnav-hero-subnav li a:hover {
   background: rgba(254, 254, 254, 0.15);
 }
+
+#highScoreSubmitButton {
+  background-color: #5bb853;
+  padding: 10px;
+  border-radius: 4px;
+}
