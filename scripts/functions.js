@@ -11,7 +11,10 @@ $(document).ready(function() {
       url: 'https://milky-way-scoreboard-api.herokuapp.com/api/v1/new-score',
       method: 'POST',
       dataType: 'application/json',
-      data: { userName: $('#name').val(), userScore: score},
+      data: {
+        userName: $('#name').val(),
+        userScore: score
+      },
       success: $('#userDataModal').foundation('close')
     });
   });
@@ -19,7 +22,8 @@ $(document).ready(function() {
 
 function startGame() {
   if (spaceBattle.paused = true) {
-    var onClick = spaceBattle.input.onTap.addOnce(start ,this);
+    var onClick = spaceBattle.input.onTap.addOnce(start, this);
+
     function start() {
       startScreen.visible = false;
       clickAudio.play()
@@ -30,23 +34,23 @@ function startGame() {
 
 var functions = function(spaceBattle) {};
 
-function fireLaser () {
+function fireLaser() {
   if (spaceBattle.time.now > laserTime) {
     var BULLET_SPEED = 500;
     var BULLET_SPACING = 400;
     laser = lasers.getFirstExists(false);
-  if (laser) {
-    var laserOffset = 20 * Math.sin(spaceBattle.math.degToRad(mainShip.angle));
-    laser.reset(mainShip.x, mainShip.y);
-    spaceBattle.physics.arcade.velocityFromAngle(laser.angle - 90, BULLET_SPEED, laser.body.velocity);
-    laser.body.velocity.x += mainShip.body.velocity.x;
-    laserTime = spaceBattle.time.now + BULLET_SPACING;
-    mainShipLaserAudio.play()
-   }
+    if (laser) {
+      var laserOffset = 20 * Math.sin(spaceBattle.math.degToRad(mainShip.angle));
+      laser.reset(mainShip.x, mainShip.y);
+      spaceBattle.physics.arcade.velocityFromAngle(laser.angle - 90, BULLET_SPEED, laser.body.velocity);
+      laser.body.velocity.x += mainShip.body.velocity.x;
+      laserTime = spaceBattle.time.now + BULLET_SPACING;
+      mainShipLaserAudio.play()
+    }
   }
 };
 
-function resetBullet (laser) {
+function resetBullet(laser) {
   laser.kill();
 };
 
@@ -105,14 +109,14 @@ function meteorShower() {
   var meteors = meteor.getFirstExists(false);
 
   if (meteors) {
-      meteors.reset(spaceBattle.rnd.between(0, spaceBattle.width), -20);
-      meteors.scale.x = Math.random() - .4;
-      meteors.scale.y = meteors.scale.x;
-      meteors.body.velocity.x = spaceBattle.rnd.between(-300, 300);
-      meteors.body.velocity.y = spaceBattle.rnd.between(-300, 300);
-      meteors.body.drag.x = 100;
-    }
-    spaceBattle.time.events.add(spaceBattle.rnd.between(MIN_ENEMY_SPACING, MAX_ENEMY_SPACING), meteorShower);
+    meteors.reset(spaceBattle.rnd.between(0, spaceBattle.width), -20);
+    meteors.scale.x = Math.random() - .4;
+    meteors.scale.y = meteors.scale.x;
+    meteors.body.velocity.x = spaceBattle.rnd.between(-300, 300);
+    meteors.body.velocity.y = spaceBattle.rnd.between(-300, 300);
+    meteors.body.drag.x = 100;
+  }
+  spaceBattle.time.events.add(spaceBattle.rnd.between(MIN_ENEMY_SPACING, MAX_ENEMY_SPACING), meteorShower);
 };
 
 function updateMeteorShower() {
@@ -159,30 +163,30 @@ function meteorHit(mainShip, meteor) {
 };
 
 function hitEnemy(enemyFighter1, lasers) {
-    var explosion = explosions.getFirstExists(false);
-    explosion.reset(lasers.body.x + lasers.body.halfWidth, lasers.body.y + lasers.body.halfHeight);
-    explosion.body.velocity.y = enemyFighter1.body.velocity.y;
-    explosion.alpha = 3;
-    explosion.play('explosion', 30, false, true);
-    enemyFighter1.kill();
-    lasers.kill()
-    shieldCount += 20;
-    score += 20;
-    displayScore.text = 'Score: ' + score;
+  var explosion = explosions.getFirstExists(false);
+  explosion.reset(lasers.body.x + lasers.body.halfWidth, lasers.body.y + lasers.body.halfHeight);
+  explosion.body.velocity.y = enemyFighter1.body.velocity.y;
+  explosion.alpha = 3;
+  explosion.play('explosion', 30, false, true);
+  enemyFighter1.kill();
+  lasers.kill()
+  shieldCount += 20;
+  score += 20;
+  displayScore.text = 'Score: ' + score;
 };
 
 function hitEnemy(enemyFighter2, lasers) {
-    var explosion = explosions.getFirstExists(false);
-    explosion.reset(lasers.body.x + lasers.body.halfWidth, lasers.body.y + lasers.body.halfHeight);
-    explosion.body.velocity.y = enemyFighter2.body.velocity.y;
-    explosion.alpha = 3;
-    explosion.play('explosion', 30, false, true);
-    enemyShipExplosion.play();
-    enemyFighter2.kill();
-    lasers.kill()
-    shieldCount += 10;
-    score += 10
-    displayScore.text = 'Score: ' + score;
+  var explosion = explosions.getFirstExists(false);
+  explosion.reset(lasers.body.x + lasers.body.halfWidth, lasers.body.y + lasers.body.halfHeight);
+  explosion.body.velocity.y = enemyFighter2.body.velocity.y;
+  explosion.alpha = 3;
+  explosion.play('explosion', 30, false, true);
+  enemyShipExplosion.play();
+  enemyFighter2.kill();
+  lasers.kill()
+  shieldCount += 10;
+  score += 10
+  displayScore.text = 'Score: ' + score;
 };
 
 function hitMeteor(meteor, lasers) {
@@ -232,7 +236,10 @@ function shieldCollision2(shield, enemyFighter2) {
 function displayGameOver() {
   gameOver.visible = true;
   restartButton.visible = true;
-  displayScore = spaceBattle.add.text(spaceBattle.world.centerX - 65, spaceBattle.world.centerY - 200, 'Score: ' + score, { font: '50px Bungee Hairline' , fill: '#fff' });
+  displayScore = spaceBattle.add.text(spaceBattle.world.centerX - 65, spaceBattle.world.centerY - 200, 'Score: ' + score, {
+    font: '50px Bungee Hairline',
+    fill: '#fff'
+  });
   mainShip.kill()
 };
 
@@ -240,7 +247,10 @@ function openModal() {
   $('#userDataModal').foundation('open');
 };
 
-function fadePicture() {
-  console.log('fade');
-  spaceBattle.add.tween(this).to( { alpha: 0 }, 2000, Phaser.Easing.Linear.None, true);
-}
+function setResetHandlers() {
+  tapRestart = spaceBattle.input.onTap.addOnce(restart, this);
+
+  function restart() {
+    location.reload()
+  }
+};

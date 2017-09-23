@@ -1,38 +1,43 @@
 var spaceBattle = new Phaser.Game(1200, 1400, Phaser.AUTO, 'space-battle-div', {
-  preload: preload, create: create, update: update
+  preload: preload,
+  create: create,
+  update: update
 });
 
 var backDrop;
-  var mainMusic;
-  var score = 0;
-  var displayScore;
-  var health = 100;
-  var displayHealth;
-  var mainShip;
-  var lasers;
-  var laser;
-  var laserTime = 0;
-  var fireButton;
-  var mainShipExplosion;
-  var mainShipLaserAudio;
-  var cursors;
-  var a, d, q;
-  var meteor;
-  var enemyFighter1;
-  var enemyFighter2;
-  var explosions;
-  var gameOver;
-  var restartButton;
-  var tapRestart;
-  var gameStats;
-  var fonts = { font: '40px Bungee Hairline' , fill: '#fff' };
-  var enemyLasers;
-  var meteorShowerAlert;
-  var shield;
-  var shieldCount = 0;
-  var chargeShield, chargeShield1, chargeShield2;
-  var clickAudio;
-  var startScreen;
+var mainMusic;
+var score = 0;
+var displayScore;
+var health = 100;
+var displayHealth;
+var mainShip;
+var lasers;
+var laser;
+var laserTime = 0;
+var fireButton;
+var mainShipExplosion;
+var mainShipLaserAudio;
+var cursors;
+var a, d, q;
+var meteor;
+var enemyFighter1;
+var enemyFighter2;
+var explosions;
+var gameOver;
+var restartButton;
+var tapRestart;
+var gameStats;
+var fonts = {
+  font: '40px Bungee Hairline',
+  fill: '#fff'
+};
+var enemyLasers;
+var meteorShowerAlert;
+var shield;
+var shieldCount = 0;
+var chargeShield, chargeShield1, chargeShield2;
+var clickAudio;
+var startScreen;
 
 
 function preload() {
@@ -75,7 +80,7 @@ function create() {
   backDrop = spaceBattle.add.tileSprite(0, 0, 1200, 1400, 'backDrop');
   spaceBattle.paused = true;
 
-  startScreen = spaceBattle.add.image(340 , 300 , 'logo');
+  startScreen = spaceBattle.add.image(340, 300, 'logo');
 
   startGame();
   mainMusic = spaceBattle.add.audio('mainMusic');
@@ -124,9 +129,9 @@ function create() {
   lasers.setAll('outOfBoundsKill', true);
 
   cursors = this.input.keyboard.createCursorKeys();
-  a = spaceBattle.input.keyboard.addKey(Phaser.Keyboard.A);
-  d = spaceBattle.input.keyboard.addKey(Phaser.Keyboard.D);
-  q = spaceBattle.input.keyboard.addKey(Phaser.Keyboard.Q);
+  // a = spaceBattle.input.keyboard.addKey(Phaser.Keyboard.A);
+  // d = spaceBattle.input.keyboard.addKey(Phaser.Keyboard.D);
+  // q = spaceBattle.input.keyboard.addKey(Phaser.Keyboard.Q);
   ultimateButton = spaceBattle.input.keyboard.addKey(Phaser.KeyCode.SHIFT);
   fireButton = spaceBattle.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
 
@@ -140,10 +145,12 @@ function create() {
   meteor.setAll('checkWorldBounds', true);
   meteor.setAll('outOfBoundsKill', true);
   meteorShowerAlert = spaceBattle.add.text(
-    spaceBattle.world.centerX -550,
+    spaceBattle.world.centerX - 550,
     spaceBattle.world.centerY,
-    'Warning! Asteroid belt ahead!',
-    { font: '60px Bungee Hairline' , fill: '#fff' });
+    'Warning! Asteroid belt ahead!', {
+      font: '60px Bungee Hairline',
+      fill: '#fff'
+    });
   meteorShowerAlert.visible = false;
   spaceBattle.time.events.add(Phaser.Timer.SECOND * 15,
     updateMeteorShower,
@@ -229,10 +236,12 @@ function create() {
   gameOver.visible = false;
 
   restartButton = spaceBattle.add.text(
-    spaceBattle.world.centerX -255,
-    spaceBattle.world.centerY -430,
-    'CLICK TO RESTART',
-    { font: '60px Bungee Hairline', fill: '#fff' });
+    spaceBattle.world.centerX - 255,
+    spaceBattle.world.centerY - 430,
+    'CLICK TO RESTART', {
+      font: '60px Bungee Hairline',
+      fill: '#fff'
+    });
   restartButton.visible = false;
 
 
@@ -256,14 +265,14 @@ function update() {
 
   spaceBattle.physics.arcade.overlap(meteor, lasers, hitMeteor, null, this);
 
-  if (a.isDown || cursors.left.isDown){
-      mainShip.x -= 12;
-  } else if (d.isDown || cursors.right.isDown) {
-      mainShip.x += 12;
+  if (cursors.left.isDown) {
+    mainShip.x -= 12;
+  } else if (cursors.right.isDown) {
+    mainShip.x += 12;
   }
 
   if (fireButton.isDown) {
-      fireLaser();
+    fireLaser();
   }
 
   if (ultimateButton.isDown && shieldCount > 200) {
@@ -273,7 +282,7 @@ function update() {
   if (shieldCount === 200) {
     spaceBattle.add.text(10, 80, 'You gained a Sield! Press SHIFT now!', fonts);
     chargeShield.visible = true;
-  } else if(shieldCount < 200) {
+  } else if (shieldCount < 200) {
     chargeShield.visible = false
   }
 
@@ -296,11 +305,6 @@ function update() {
     openModal();
 
     setResetHandlers();
-    function setResetHandlers() {
-      tapRestart = spaceBattle.input.onTap.addOnce(restart,this);
-      function restart() {
-        location.reload()
-      }
-    }
+
   }
 }; // <-------------------- end of Update----------------------------------

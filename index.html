@@ -1,41 +1,41 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Milky Way Battles</title>
-    <link href="https://fonts.googleapis.com/css?family=Bungee+Hairline" rel="stylesheet">
-    <script
-      src="https://code.jquery.com/jquery-3.2.1.min.js"
-      integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-      crossorigin="anonymous">
-    </script>
-    <script src="attr/libs/phaser.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.1/js/foundation.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.1/css/foundation.min.css"/>
-    <script src="scripts/script.js"></script>
-    <script src="scripts/functions.js"></script>
-    <link rel="stylesheet" href="style.css">
-  </head>
-  <body>
-    <header class="subnav-hero-section" data-magellan>
-      <img id="head-img" src="attr/images/MilkyWay.png">
-      <ul class="subnav-hero-subnav">
-        <li><a href="https://milky-way-battles-scoreboard.firebaseapp.com">Scoreboard</a></li>
-        <li><a href="#first" class="is-active" data-magellan>Play!</a></li>
-        <li><a target="_blank" href="#">About</a></li>
-      </ul>
-    </header>
 
-    <div class="reveal small" id="userDataModal" data-reveal>
-      <form id="user-score-form">
-        <label for="name">Enter Name For Scoreboard!
+<head>
+  <meta charset="utf-8">
+  <title>Milky Way Battles</title>
+  <link href="https://fonts.googleapis.com/css?family=Bungee+Hairline" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous">
+  </script>
+  <script src="attr/libs/phaser.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.1/js/foundation.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.1/css/foundation.min.css" />
+  <script src="scripts/script.js"></script>
+  <script src="scripts/functions.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <header class="subnav-hero-section" data-magellan>
+    <img id="head-img" src="attr/images/MilkyWay.png">
+    <ul class="subnav-hero-subnav">
+      <li><a href="https://milky-way-battles-scoreboard.firebaseapp.com">Scoreboard</a></li>
+      <li><a href="#first" class="is-active" data-magellan>Play!</a></li>
+      <li><a target="_blank" href="#">About</a></li>
+    </ul>
+  </header>
+
+  <div class="reveal small" id="userDataModal" data-reveal>
+    <form id="user-score-form">
+      <label for="name">Enter Name For Scoreboard!
           <input type="text" id="name" name="userName">
         </label>
-        <button id="highScoreSubmitButton" type=“submit” value=“Submit”>Submit</button>
-      </form>
-    </div>
+      <button id="highScoreSubmitButton" type=“submit” value=“Submit”>Submit</button>
+    </form>
+  </div>
 
-    <div id="first"></div>
+  <div id="first"></div>
 
-  </body>
+</body>
+
 </html>
